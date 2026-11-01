@@ -73,6 +73,9 @@ def check_file(path):
         with open(path, "r", encoding="utf-8") as f:
             source = f.read()
         tree = ast.parse(source, filename=path)
+    # I read as UTF-8 on purpose. A file saved in another encoding lands
+    # here as UnicodeDecodeError and is reported as unreadable rather
+    # than scored from a guessed decoding.
     except (OSError, SyntaxError, UnicodeDecodeError) as e:
         return [], str(e)
     results = [
@@ -82,6 +85,10 @@ def check_file(path):
     return sorted(results), None
 
 
+# I sort both the walk and the final list on purpose. Directory order
+# comes from the filesystem, so without this the same tree could print
+# its files in a different order on another machine and a diff of two
+# runs would look like a change when nothing moved.
 def collect_paths(path):
     """Expand a file or directory argument into the .py files to check."""
     if os.path.isfile(path):
@@ -129,6 +136,9 @@ def main():
             if args.max_complexity is not None and complexity > args.max_complexity:
                 over_limit = True
 
+    # I send parse failures and over-limit functions out with the same 1.
+    # A caller that only reads the exit code cannot tell them apart, so it
+    # has to read the text: failures go to stderr, scores to stdout.
     if failed or over_limit:
         return 1
     return 0
