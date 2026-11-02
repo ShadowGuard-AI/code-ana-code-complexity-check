@@ -3,134 +3,84 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Code Ana Code Complexity Check: what it is, how it runs, where it stops</title>
-<meta name="description" content="Code Ana Code Complexity Check is one of my projects. The README in the repo is short, so this page sticks to what the files themselves show.">
+<title>code-ana-code-complexity-check: The Balloon Post Departure Ledger</title>
+<meta name="description" content="Analyzes Python code files and reports the cyclomatic complexity of each function, one line per function with its file and line number.">
 <style>
-:root {
-  --bg: #e8dec4; --panel: #f4ecd6; --ink: #183636;
-  --mut: #ffffff;
-  --acc: #147a72; --acc2: #c65434;
-  --line: #f4ecd6;
-}
-* { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--ink);
-  font-family: 'Palatino Linotype', Palatino, serif; line-height: 1.55; }
-code, pre, .mono { font-family: 'Menlo', monospace; }
-a { color: var(--acc2); }
-.hero { padding: 3rem 6vw 1rem; }
-.hero img.banner { width: 100%; height: auto; border: 1px solid var(--line);
-  border-radius: 10px; }
-.logo { width: 92px; height: 92px; border-radius: 18px;
-  border: 1px solid var(--line); }
-h1 { font-size: 2.4rem; margin: 0.4em 0 0.1em; }
-h2 { border-bottom: 2px solid var(--acc); padding-bottom: 0.2em;
-  margin-top: 2em; }
-.lede { font-size: 1.15rem; max-width: 62ch; }
-main { padding: 0 6vw 3rem; max-width: 1180px; margin: 0 auto; }
-.grid { display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
-.card { background: var(--panel); border: 1px solid var(--line);
-  border-radius: 12px; padding: 1rem 1.2rem; }
-.card.pop { animation: rise 0.7s ease both; }
-@keyframes rise { from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: none; } }
-pre.code { background: #101014; color: #e8e6df; padding: 1rem 1.2rem;
-  border-radius: 12px; overflow-x: auto; font-size: 0.86rem;
-  border-left: 5px solid var(--acc); }
-table { border-collapse: collapse; width: 100%; }
-td, th { border-bottom: 1px solid var(--line); padding: 0.45rem 0.6rem;
-  text-align: left; }
-.shots { display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-.shots img { width: 100%; height: auto; border: 1px solid var(--line);
-  border-radius: 10px; background: #f4f1e8; }
-footer { padding: 2rem 6vw; border-top: 1px solid var(--line);
-  color: var(--mut); }
-.rail { display: flex; gap: 1.2rem; align-items: flex-start; }
-.rail nav { position: sticky; top: 1rem; min-width: 180px; }
-@media (max-width: 760px) { .rail { flex-direction: column; }
-  .rail nav { position: static; } }
-@media (prefers-reduced-motion: reduce) {
-  .card.pop { animation: none; } * { scroll-behavior: auto; } }
+@font-face{font-family:'Balsamiq Sans';src:url('fonts/BalsamiqSans.ttf') format('truetype');}
+@font-face{font-family:'Cabin';src:url('fonts/Cabin.ttf') format('truetype');}
+:root{--cream:#f4eedc;--cream2:#ece3c8;--slate:#4a525c;--jade:#3e7a68;--jaded:#27503f;--brass:#a8843e;--ink:#20242a}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:'Cabin',sans-serif;line-height:1.65}
+h1,h2,h3{font-family:'Balsamiq Sans',sans-serif;color:var(--slate)}
+.hero{background:linear-gradient(180deg,#9db8ac,var(--cream) 78%)}.hero img.heroimg{width:100%;height:54vh;object-fit:cover;display:block}
+.hero .in,main,footer{max-width:1120px;margin:0 auto;padding:1rem 6vw 2rem}.logo{width:210px}
+nav{display:flex;gap:1rem;flex-wrap:wrap;margin:1.2rem 0}
+.btn{display:inline-block;text-decoration:none;font-family:'Balsamiq Sans',sans-serif;color:var(--cream);background:var(--jade);border:2px dashed var(--slate);border-radius:14px;padding:.8rem 1.2rem;position:relative;transition:transform .15s,box-shadow .15s}
+.btn::after{content:'';position:absolute;right:8px;bottom:6px;width:12px;height:9px;border:2px solid var(--brass);border-top:none}
+.btn:hover{transform:translateY(-4px);box-shadow:0 8px 12px rgba(32,36,42,.28)}
+.btn:active{background:var(--slate)}.btn:focus-visible{outline:4px double var(--slate);outline-offset:3px}
+a{color:var(--jaded)}a::before{content:'';display:inline-block;width:18px;height:10px;margin-right:.5em;background:repeating-linear-gradient(90deg,#d8783e 0 5px,var(--cream) 5px 9px,var(--slate) 9px 13px);border-left:3px solid var(--slate);vertical-align:0;transition:transform .15s}
+a:hover::before{transform:rotate(-4deg) translateX(2px);background:repeating-linear-gradient(90deg,var(--jade) 0 5px,var(--cream) 5px 9px,var(--jaded) 9px 13px)}
+.btn::before{content:none}
+.bundle{background:var(--cream2);border:2px solid #c9bd96;border-radius:8px;padding:.4rem 1.5rem 1.3rem;margin:1.8rem 0;position:relative}
+.bundle::before{content:'';position:absolute;inset:10px;border:1px solid rgba(74,82,92,.4);pointer-events:none}
+pre{background:#333a42;color:var(--cream);padding:1rem;overflow-x:auto;font-size:1.02rem}
+.track{height:20px;margin:1.6rem 0;background:radial-gradient(circle at 10px 12px,var(--slate) 3px,transparent 4px);background-size:52px 20px}
+.callout{background:var(--slate);color:var(--cream);padding:.2rem 1.3rem 1rem;margin:1.3rem 0}.callout h3{color:var(--cream)}
+.over{color:var(--jaded);font-weight:700}
+table{border-collapse:collapse}td,th{padding:.4rem .8rem;border-bottom:1px solid rgba(32,36,42,.25);text-align:left}
 </style>
 </head>
-<body class="layout-cards">
-<!-- This page exists for code-ana-code-complexity-check alone: the layout (index-cards),
-     the colors, and the type were picked for this project, not
-     shared with the other project pages. The code block below is
-     copied from the file it names, line for line. If it looks
-     plain, that is because the project is plain, and I would
-     rather the page match the project than dress it up. The one
-     thing I will not do here is oversell: what this project does
-     not do is stated on the page, not hidden from it. -->
+<body>
 <header class="hero">
-  <img class="logo" src="assets/logo.png" alt="Code Ana Code Complexity Check logo">
-  <img class="banner" src="assets/banner.png" alt="">
-  <h1>Code Ana Code Complexity Check</h1>
-  <p class="mono"><a href="https://github.com/ShadowGuard-AI/code-ana-code-complexity-check">github.com/ShadowGuard-AI/code-ana-code-complexity-check</a></p>
+<img class="heroimg" src="assets/intro-banner.png" alt="The balloon post at dawn with no lettering: a windsock streaming on the tower edge, the nearest balloon just clear of the rooftops with its mail bag beneath it, chimney smoke bending the same way, and two more balloons small over the open country">
+<div class="in">
+<img class="logo" src="assets/logo.png" alt="One cream mail envelope with a closed flap, a blank slate postage square and a brass seal, carried under the cropped curve of a monsoon jade balloon on two brass rigging lines, over the name code-ana-code-complexity-check">
+<h1>code-ana-code-complexity-check</h1>
+<p>A departure ledger from the balloon post office: one long ruled sheet, read top to bottom, carrying a written score out of a codebase to a gate that can act on it.</p>
+<nav>
+<a class="btn" href="#work">Score These Files</a>
+<a class="btn" href="#gate">Fail Above This Complexity</a>
+<a class="btn" href="#work">Search This Directory</a>
+<a class="btn" href="#gate">Show Help</a>
+</nav>
+</div>
 </header>
-
 <main>
-  <section class="rail">
-    <nav aria-label="on this page">
-      <p class="mono"><a href="#run">Run it</a><br>
-      <a href="#files">The files</a><br>
-      <a href="#sheets">The sheets</a><br>
-      <a href="https://github.com/ShadowGuard-AI/code-ana-code-complexity-check">The repo</a></p>
-    </nav>
-    <div>
-      <p class="lede">Code Ana Code Complexity Check is one of my projects. The README in the repo is short, so this page sticks to what the files themselves show.</p>
-      <div class="grid">
-        <div class="card pop"><h3>What it is</h3>
-          <p>Code Ana Code Complexity Check: 2 files, 3 counted
-          lines across Markdown 2, Python 1. One job, done in the
-          open, in files you can read.</p></div>
-        <div class="card pop"><h3>The biggest piece</h3>
-          <p><code>README.md</code> carries the most
-          lines. If the project grows, that file is where the growth
-          lands first, for better or worse.</p></div>
-        <div class="card pop"><h3>The honest gap</h3>
-          <p>No test files yet. That is the honest gap, and the roadmap in the visuals folder says what the first one should cover.</p></div>
-      </div>
-      <section id="run">
-        <h2>Run it</h2>
-        <p>The repo README has the exact commands for this one. The
-        shape is the shape for most of my projects: clone it, read the
-        top file first so you know what will happen, then run it on
-        something you do not mind breaking.</p>
-        <p class="mono">$ git clone https://github.com/ShadowGuard-AI/code-ana-code-complexity-check.git<br>$ cd code-ana-code-complexity-check</p>
-      </section>
-      
-      <section id="files">
-        <h2>The files that matter</h2>
-        <table><tr><th>File</th><th>Lines</th></tr>
-        <tr><td><code>README.md</code></td><td>2</td></tr>
-        <tr><td><code>main.py</code></td><td>1</td></tr>
-        </table>
-        <p>Names doing the work: <span class="mono">no named functions in the snapshot</span>.</p>
-      </section>
-      <section id="sheets">
-        <h2>Drawn by hand</h2>
-        <p>I sketch my projects on notebook paper so I have to
-        understand them well enough to draw them. The full set,
-        with the counts and how they were counted, is the
-        <a href="https://github.com/ShadowGuard-AI/code-ana-code-complexity-check/tree/main/code-ana-code-complexity-check-Visuals">code-ana-code-complexity-check-Visuals</a>
-        folder in the repo. Nothing is drawn over the binder holes.
-        That is a rule, not a style.</p>
-        <div class="shots">
-          <img src="assets/architecture.png" alt="Hand drawn architecture sheet for Code Ana Code Complexity Check">
-          <img src="assets/flowchart.png" alt="Hand drawn flowchart sheet for Code Ana Code Complexity Check">
-          <img src="assets/product-map.png" alt="Hand drawn product map sheet for Code Ana Code Complexity Check">
-        </div>
-      </section>
-    </div>
-  </section>
+<section class="bundle" id="work"><h2>One Line per Function</h2>
+<p>code-ana-code-complexity-check analyzes Python code files and reports the cyclomatic complexity of each function, one line per function with its file and line number. It accepts a single file or a directory, which is searched recursively for .py files.</p>
+<h2>How the Counting Works</h2>
+<p>Complexity counts 1 for entering a function, plus 1 for each if, loop, except handler, conditional expression, comprehension filter, and each extra operand in an and/or chain. Nested functions are scored separately, not as part of the function that contains them.</p>
+<p>No sample scores beyond the verified ones on the gate leaf are given on this page.</p>
+</section>
+<div class="track"></div>
+<section class="bundle"><h2>Install, One Clone Line</h2>
+<pre>git clone https://github.com/ShadowGuard-AI/code-ana-code-complexity-check</pre>
+<p>The clone address is correct as printed and is shown without any flag. The README gives no directory change and no dependency step after it.</p>
+<p>Repository fact, marked as such: the repository carries no requirements file, because the tool runs on the standard library alone, a fact the code shows in its imports.</p>
+<h2>The One Command Line</h2>
+<pre>python3 main.py &lt;file-or-directory&gt; [--max-complexity N]</pre>
+<p>The bracketed flag is optional. The positional path is a Python file or a directory searched recursively for .py files. --max-complexity N is the limit whose working is described on the next leaf.</p>
+<p>The README carries no parameter table, and this site does not pretend that it does. These glosses are drawn from the usage line, the introduction, and the argument parser in main.py, and this leaf says that is where they come from.</p>
+</section>
+<div class="track"></div>
+<section class="bundle" id="gate"><h2>A Gate for Scripts and CI</h2>
+<p>With --max-complexity N the run exits with status 1 when any function exceeds N, so it can gate a script or a CI step. On this page, the one line that reports a score over its limit is printed in monsoon jade darkening toward slate: <span class="over">a score over its limit</span>.</p>
+<p>A file that does not parse is reported as an error and also fails the run.</p>
+<h2>Verified on a Single Branch</h2>
+<p>A function with one if branch scores complexity 2.</p>
+<p>With --max-complexity 1, that same run exits 1.</p>
+<div class="callout"><h3>This File Could Not Be Read</h3>
+<p>A file that does not parse is reported as an error and fails the run. A path that does not exist is reported as an error and fails the run. A directory holding no Python files is reported and fails the run.</p></div>
+<div class="callout"><h3>Read the Text, Not Only the Code</h3>
+<p>Scores print to the standard output while failures print to the error output, so a caller reading only the exit code cannot tell an over limit function from an unparsable file and must read the text.</p></div>
+<p><a href="https://github.com/ShadowGuard-AI/code-ana-code-complexity-check">The repository on GitHub</a></p>
+</section>
+<div class="track"></div>
+<section class="bundle"><h2>Licence Leaf, Closing the Ledger</h2>
+<pre>See LICENSE</pre>
+<p>The README closes with those words, printed as they stand. The repository's LICENSE file carries the MIT License. No copyright line appears in the README itself, and none is added here.</p>
+</section>
 </main>
-<footer>
-  <p>Code Ana Code Complexity Check is one of my projects. This page was written
-  from the repo itself on 2026-10-30: the counts are the
-  repo's counts, the code is the repo's code, and the gaps are the
-  repo's gaps.</p>
-</footer>
+<footer><p>Theme: Balloon Post of the Siege. Type: Balsamiq Sans for display, Cabin for reading, both SIL Open Font License 1.1. The lettering reference Game Sans Serif 7 was reference only and is not embedded.</p></footer>
 </body>
 </html>

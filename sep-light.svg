@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 34" role="img" aria-label="Minor separator: a centred run of ground track dots with plain rule on either side, slate on cloud cream">
+<rect x="0" y="0" width="1200" height="34" fill="#f4eedc"/>
+<path d="M0 20 L430 20 M770 20 L1200 20" stroke="#4a525c" stroke-width="2"/>
+<g fill="#4a525c"><circle cx="470" cy="19" r="3"/><circle cx="530" cy="16" r="3"/><circle cx="590" cy="14" r="3"/><circle cx="650" cy="16" r="3"/><circle cx="710" cy="19" r="3"/></g>
+</svg>
