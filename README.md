@@ -1,11 +1,11 @@
-![The balloon post at dawn with no lettering: a windsock streaming on the tower edge in the foreground, the nearest balloon just clear of the rooftops with its mail bag beneath it, chimney smoke bending the same way, rooftops running to the city wall, and two more balloons small over the open country](intro-banner.png)
+![The crimson ribbon fork close up, the ribbon tied around the yew at the junction, gravel paths running either side and a wooden tally stick resting on the gravel](intro-banner.png)
 
 
 # code-ana-code-complexity-check
 
-![Dawn over the rooftops of a walled city: three balloons climbing away with mail bags under their baskets, a windsock streaming on the tower, and code-ana-code-complexity-check stencilled in cloud cream on the side of the nearest mail bag](banner.png)
+![A tall yew hedge maze seen from a gardener's ladder at its edge, gravel paths forking between deep green walls, the gardener tallying the turns on a wooden stick, one route marked by a crimson ribbon at its first fork](banner.png)
 
-![One cream mail envelope with a closed flap, a blank slate postage square and a brass seal, carried under the cropped curve of a monsoon jade balloon on two brass rigging lines, the heading plate](logo.png)
+![A yew maze junction seen from directly above, gravel paths forking three ways between dark green hedge walls, a crimson ribbon tied at one fork, the heading plate](logo.png)
 
 ![Balloon post departure in three depths: two distant balloons cross the sky at the pace of the wind, the near balloon climbs in a shallow rise with its basket swaying, and the tower windsock streams and eases while chimney smoke bends in the same rhythm](scene.svg)
 
